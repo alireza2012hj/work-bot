@@ -1,4 +1,5 @@
 # auto_workbot.py
+
 import discord
 import asyncio
 import os
@@ -11,7 +12,9 @@ WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 CHANNEL_ID = 1393495814004805704
 RUN_DURATION = 15 * 60 * 60  # 15 hours
 
-money_regex = re.compile(r"got\s*<:.+?:\d+>(\d+)")
+# Regex for parsing <emoji>amount and fallback plain digits
+emoji_money_regex = re.compile(r"<:.+?:\d+>(\d+)")
+fallback_money_regex = re.compile(r"\D(\d{2,6})(?!\d)")  # avoid catching reply numbers or message IDs
 
 class WorkBot(discord.Client):
     async def on_ready(self):
@@ -36,23 +39,30 @@ class WorkBot(discord.Client):
                 print("📤 Sent -work")
                 await asyncio.sleep(3)
 
-                # Fetch latest messages (fix: no .flatten())
+                # Fetch recent messages and parse
                 async for msg in self.channel.history(limit=5):
-                    if msg.author.bot and msg.embeds:
-                        embed = msg.embeds[0]
-                        desc = embed.description or ""
-                        match = money_regex.search(desc)
+                    if (
+                        msg.author.id == 292953664492929025 and
+                        msg.embeds and
+                        msg.embeds[0].description
+                    ):
+                        desc = msg.embeds[0].description
+                        match = emoji_money_regex.search(desc)
+                        if not match:
+                            match = fallback_money_regex.search(desc)
+
                         if match:
                             amount = int(match.group(1))
                             self.total_earned += amount
                             timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
                             await self.send_webhook_log(amount, timestamp, desc)
-                            break
+                            break  # Only log once per -work
 
                 await asyncio.sleep(1)
                 await self.channel.send("-dep all")
                 print("📤 Sent -dep all")
-                await asyncio.sleep(120)  # Wait 2 minutes
+                await asyncio.sleep(120)
+
             except Exception as e:
                 print(f"⚠️ Error in loop: {e}")
                 await asyncio.sleep(10)
