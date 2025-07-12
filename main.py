@@ -36,9 +36,8 @@ class WorkBot(discord.Client):
                 print("📤 Sent -work")
                 await asyncio.sleep(3)
 
-                # Fetch the latest bot message (assuming UnbelievaBoat responds instantly)
-                messages = await self.channel.history(limit=5).flatten()
-                for msg in messages:
+                # Fetch latest messages (fix: no .flatten())
+                async for msg in self.channel.history(limit=5):
                     if msg.author.bot and msg.embeds:
                         embed = msg.embeds[0]
                         desc = embed.description or ""
@@ -53,7 +52,7 @@ class WorkBot(discord.Client):
                 await asyncio.sleep(1)
                 await self.channel.send("-dep all")
                 print("📤 Sent -dep all")
-                await asyncio.sleep(120)
+                await asyncio.sleep(120)  # Wait 2 minutes
             except Exception as e:
                 print(f"⚠️ Error in loop: {e}")
                 await asyncio.sleep(10)
