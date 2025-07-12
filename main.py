@@ -5,7 +5,7 @@ import os
 
 TOKEN = os.environ["TOKEN"]  # Or replace with "your_token_here"
 
-CHANNEL_ID = 1392908236876808394  # Replace with your actual text channel ID
+CHANNEL_ID = 1393495814004805704  # Replace with your actual text channel ID
 
 class WorkBot(discord.Client):
     async def on_ready(self):
