@@ -1,4 +1,7 @@
 # auto_workbot.py
+import sys
+sys.exit()  # 🛑 Immediately stop the script and exit the runtime
+
 import discord
 import asyncio
 import os
