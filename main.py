@@ -11,7 +11,7 @@ WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 CHANNEL_ID = 1393495814004805704
 RUN_DURATION = 15 * 60 * 60  # 15 hours
 
-money_regex = re.compile(r"You .*? get .*?>(\d+)[\.\s]*")  # Parses money from -work result
+money_regex = re.compile(r"you.*?got.*?[:>\s](\d+)[\.\s]*", re.IGNORECASE)
 
 class WorkBot(discord.Client):
     async def on_ready(self):
