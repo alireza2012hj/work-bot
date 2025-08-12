@@ -80,26 +80,27 @@ class WorkBot(discord.Client):
         async with aiohttp.ClientSession() as session:
             await session.post(WEBHOOK_URL, json={"embeds": [embed]})
 
-    async def auto_shutdown(self):
-        await asyncio.sleep(RUN_DURATION)
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
-        await self.send_shutdown_log(timestamp)
-        print("⏱️ 15 hours reached. Shutting down.")
-        await self.close()
-        os._exit(1)
+    # async def auto_shutdown(self):
+    #     await asyncio.sleep(RUN_DURATION)
+    #     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    #     await self.send_shutdown_log(timestamp)
+    #     print("⏱️ 15 hours reached. Shutting down.")
+    #     await self.close()
+    #     os._exit(1)
 
-    async def send_shutdown_log(self, timestamp):
-        embed = {
-            "title": "🛑 Bot Shutdown",
-            "description": "Bot automatically shut down after 15 hours.",
-            "fields": [
-                {"name": "Total Money Earned", "value": f"`{self.total_earned}`"},
-                {"name": "Time", "value": f"`{timestamp}`"}
-            ],
-            "color": 0xff0000
-        }
-        async with aiohttp.ClientSession() as session:
-            await session.post(WEBHOOK_URL, json={"embeds": [embed]})
+    # async def send_shutdown_log(self, timestamp):
+    #     embed = {
+    #         "title": "🛑 Bot Shutdown",
+    #         "description": "Bot automatically shut down after 15 hours.",
+    #         "fields": [
+    #             {"name": "Total Money Earned", "value": f"`{self.total_earned}`"},
+    #             {"name": "Time", "value": f"`{timestamp}`"}
+    #         ],
+    #         "color": 0xff0000
+    #     }
+    #     async with aiohttp.ClientSession() as session:
+    #         await session.post(WEBHOOK_URL, json={"embeds": [embed]})
 
 client = WorkBot(self_bot=True)
 client.run(TOKEN)
+
